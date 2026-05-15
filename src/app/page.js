@@ -6,28 +6,155 @@ import {
   addDoc,
   onSnapshot,
   doc,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from "firebase/firestore";
 
 import { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 export default function UsedOilResearchCRM() {
-  const [company, setCompany] = useState("");
-const [contact, setContact] = useState("");
-const [phone, setPhone] = useState("");
-const [status, setStatus] = useState("Not Called");
+  const [formData, setFormData] = useState({
+  company: "",
+  contact: "",
+  phone: "",
+  status: "Not Called",
+callDate: "",
+followUpDate: "",
+
+  capacity: "",
+  sources: "",
+  geographies: "",
+  quality: "",
+  challenges: "",
+  importCountries: "",
+  importPrice: "",
+  technology: "",
+  yield: "",
+  contaminants: "",
+  group: "",
+  cpcb: "",
+  collector: "",
+  procurementCost: "",
+  rrboPrice: "",
+  customers: "",
+  eprCredits: "",
+  eprPrice: "",
+  eprBuyers: "",
+  mou: "",
+  processingCapacity: "",
+  monthlyProcessing: "",
+  marginalCost: "",
+
+workshopType: "",
+oilChanges: "",
+usedOilGenerated: "",
+storageMethod: "",
+collectorName: "",
+sellingPrice: "",
+buyerType: "",
+formalCollection: "",
+
+industryType: "",
+monthlyOil: "",
+storageCapacity: "",
+disposalMethod: "",
+authorizedRecycler: "",
+disposalCost: "",
+disposalFrequency: "",
+eprAwareness: "",
+formalInterest: "",
+
+notes: ""
+});
 const [companies, setCompanies] = useState([]);
+const [editingId, setEditingId] = useState(null);
+const [researchType, setResearchType] =
+  useState("Recycler");
 const saveEntry = async () => {
 
-  await addDoc(collection(db, "companies"), {
-    company,
-    contact,
-    phone,
-    status,
-    createdAt: new Date()
-  });
+  if (editingId) {
 
-  alert("Saved Successfully");
+    await updateDoc(
+      doc(db, "companies", editingId),
+      {
+        ...formData
+      }
+    );
+
+    alert("Updated Successfully");
+
+    setEditingId(null);
+
+  } else {
+
+    await addDoc(collection(db, "companies"), {
+      ...formData,
+type: researchType,
+createdAt: new Date()
+    });
+
+    alert("Saved Successfully");
+  }
+
+  setFormData({
+  callDate: "",
+  followUpDate: "",
+
+  company: "",
+  contact: "",
+  phone: "",
+  status: "Not Called",
+
+  fixedCost: "",
+  variableCost: "",
+  additionalVolume: "",
+  calculatedMCU: "",
+
+  capacity: "",
+  sources: "",
+  geographies: "",
+  quality: "",
+  challenges: "",
+  importCountries: "",
+  importPrice: "",
+  technology: "",
+  yield: "",
+  contaminants: "",
+  group: "",
+  cpcb: "",
+  collector: "",
+  procurementCost: "",
+  rrboPrice: "",
+  customers: "",
+  eprCredits: "",
+  eprPrice: "",
+  eprBuyers: "",
+  mou: "",
+  processingCapacity: "",
+  monthlyProcessing: "",
+  marginalCost: "",
+
+workshopType: "",
+oilChanges: "",
+usedOilGenerated: "",
+storageMethod: "",
+collectorName: "",
+sellingPrice: "",
+buyerType: "",
+formalCollection: "",
+
+industryType: "",
+monthlyOil: "",
+storageCapacity: "",
+disposalMethod: "",
+authorizedRecycler: "",
+disposalCost: "",
+disposalFrequency: "",
+eprAwareness: "",
+formalInterest: "",
+
+notes: ""
+});
 
 };
 const updateEntry = async (id) => {
@@ -43,24 +170,70 @@ const updateEntry = async (id) => {
   });
 
 };
+
+const deleteEntry = async (id) => {
+
+  const confirmDelete = confirm(
+    "Delete this entry?"
+  );
+
+  if (!confirmDelete) return;
+
+  await deleteDoc(doc(db, "companies", id));
+
+};
+
 const exportExcel = () => {
 
-  const worksheet =
-    XLSX.utils.json_to_sheet(companies);
+  const workbook = XLSX.utils.book_new();
 
-  const workbook =
-    XLSX.utils.book_new();
+  const recyclers =
+    companies.filter(
+      c => c.type === "Recycler"
+    );
+
+  const workshops =
+    companies.filter(
+      c => c.type === "Workshop"
+    );
+
+  const industrial =
+    companies.filter(
+      c => c.type === "Industrial"
+    );
+
+  const recyclerSheet =
+    XLSX.utils.json_to_sheet(recyclers);
+
+  const workshopSheet =
+    XLSX.utils.json_to_sheet(workshops);
+
+  const industrialSheet =
+    XLSX.utils.json_to_sheet(industrial);
 
   XLSX.utils.book_append_sheet(
     workbook,
-    worksheet,
-    "Companies"
+    recyclerSheet,
+    "Recyclers"
+  );
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    workshopSheet,
+    "Workshops"
+  );
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    industrialSheet,
+    "Industrial"
   );
 
   XLSX.writeFile(
     workbook,
     "used-oil-data.xlsx"
   );
+
 };
   useEffect(() => {
 
@@ -89,99 +262,454 @@ const statuses = [
     'Completed'
   ];
 
-  const fields = [
-    'Company with Address',
-    'Contact With',
-    'Phone Number',
-    'Annual Licensed Processing Capacity',
-    'Primary Sources of Used Oil',
-    'Current Sourcing Geographies',
-    'Quality Control Process',
-    'Supply Chain Challenges',
-    'Import Countries',
-    'Import Price',
-    'Monthly Source vs Import',
-    'Recycling Technology',
-    'Typical Yield',
-    'Contaminant Testing',
-    'Group I or II',
-    'CPCB Registration',
-    'Collector Registration',
-    'Procurement Cost',
-    'RRBO Selling Price',
-    'RRBO vs Virgin Base Oil Pricing',
-    'RRBO Offtake Customers',
-    'EPR Credits Generated',
-    'EPR Credit Price',
-    'EPR Credit Buyers',
-    'Open to MOU with HPCL',
-    'Current Processing Capacity',
-    'Current Monthly Processing',
-    'Marginal Processing Cost for Additional 50 KL',
-    'Notes'
-  ];
+  const recyclerFields = [
+  {
+    label: "Company with Address",
+    key: "company"
+  },
+  {
+    label: "Contact With",
+    key: "contact"
+  },
+  {
+    label: "Phone Number",
+    key: "phone"
+  },
+  {
+    label: "Annual Licensed Processing Capacity",
+    key: "capacity"
+  },
+  {
+    label: "Primary Sources of Used Oil",
+    key: "sources"
+  },
+  {
+    label: "Current Sourcing Geographies",
+    key: "geographies"
+  },
+  {
+    label: "Quality Control Process",
+    key: "quality"
+  },
+  {
+    label: "Supply Chain Challenges",
+    key: "challenges"
+  },
+  {
+    label: "Import Countries",
+    key: "importCountries"
+  },
+  {
+    label: "Import Price",
+    key: "importPrice"
+  },
+  {
+    label: "Monthly Source vs Import",
+    key: "monthlySourceImport"
+  },
+  {
+    label: "Recycling Technology",
+    key: "technology"
+  },
+  {
+    label: "Typical Yield",
+    key: "yield"
+  },
+  {
+    label: "Contaminant Testing",
+    key: "contaminants"
+  },
+  {
+  label: "Group I or II",
+  key: "group",
+  type: "select",
+  options: [
+    "Group I",
+    "Group II",
+    "Both",
+    "Unknown"
+  ]
+},
+  {
+  label: "CPCB Registration",
+  key: "cpcb",
+  type: "select",
+  options: ["Yes", "No", "Maybe"]
+},
+{
+  label: "Collector Registration",
+  key: "collector",
+  type: "select",
+  options: ["Yes", "No", "Maybe"]
+},
+  {
+    label: "Procurement Cost",
+    key: "procurementCost"
+  },
+  {
+    label: "RRBO Selling Price",
+    key: "rrboPrice"
+  },
+  {
+    label: "RRBO vs Virgin Base Oil Pricing",
+    key: "rrboVirginPricing"
+  },
+  {
+    label: "RRBO Offtake Customers",
+    key: "customers"
+  },
+  {
+    label: "EPR Credits Generated",
+    key: "eprCredits"
+  },
+  {
+    label: "EPR Credit Price",
+    key: "eprPrice"
+  },
+  {
+    label: "EPR Credit Buyers",
+    key: "eprBuyers"
+  },
+  {
+  label: "Open to MOU with HPCL",
+  key: "mou",
+  type: "select",
+  options: ["Yes", "No", "Maybe"]
+},
+  {
+    label: "Current Processing Capacity",
+    key: "processingCapacity"
+  },
+  {
+    label: "Current Monthly Processing",
+    key: "monthlyProcessing"
+  },
+  {
+    label: "Marginal Processing Cost for Additional 50 KL",
+    key: "marginalCost"
+  },
+  {
+    label: "Notes",
+    key: "notes"
+  }
+];
+const workshopFields = [
+
+  {
+    label: "Workshop Name",
+    key: "company"
+  },
+
+  {
+    label: "Contact Person",
+    key: "contact"
+  },
+
+  {
+    label: "Phone Number",
+    key: "phone"
+  },
+
+  {
+  label: "Workshop Type",
+  key: "workshopType",
+  type: "select",
+  options: [
+    "Authorized",
+    "Local Garage",
+    "Fleet Workshop",
+    "OEM Service Center"
+  ]
+},
+
+  {
+    label: "Oil Changes Per Day",
+    key: "oilChanges"
+  },
+
+  {
+    label: "Used Oil Generated Per Month",
+    key: "usedOilGenerated"
+  },
+
+  {
+    label: "Used Oil Storage Method",
+    key: "storageMethod"
+  },
+
+  {
+    label: "Who Collects Used Oil?",
+    key: "collectorName"
+  },
+
+  {
+    label: "Selling Price of Used Oil",
+    key: "sellingPrice"
+  },
+
+  {
+  label: "Formal or Informal Buyer",
+  key: "buyerType",
+  type: "select",
+  options: [
+    "Formal",
+    "Informal",
+    "Both"
+  ]
+},
+
+  {
+  label: "Open to Formal Collection?",
+  key: "formalCollection",
+  type: "select",
+  options: ["Yes", "No", "Maybe"]
+},
+
+  {
+    label: "Major Challenges",
+    key: "challenges"
+  },
+
+  {
+    label: "Notes",
+    key: "notes"
+  }
+
+];
+const industrialFields = [
+
+  {
+    label: "Industry Name",
+    key: "company"
+  },
+
+  {
+    label: "Contact Person",
+    key: "contact"
+  },
+
+  {
+    label: "Phone Number",
+    key: "phone"
+  },
+
+  {
+    label: "Industry Type",
+    key: "industryType"
+  },
+
+  {
+    label: "Monthly Used Oil Generation",
+    key: "monthlyOil"
+  },
+
+  {
+    label: "Storage Capacity",
+    key: "storageCapacity"
+  },
+
+  {
+    label: "Current Disposal Method",
+    key: "disposalMethod"
+  },
+
+  {
+  label: "Authorized Recycler?",
+  key: "authorizedRecycler",
+  type: "select",
+  options: ["Yes", "No", "Maybe"]
+},
+
+  {
+    label: "Disposal Cost",
+    key: "disposalCost"
+  },
+
+  {
+    label: "Frequency of Disposal",
+    key: "disposalFrequency"
+  },
+
+  {
+  label: "Awareness of EPR Rules",
+  key: "eprAwareness",
+  type: "select",
+  options: ["Yes", "No", "Partial"]
+},
+
+  {
+  label: "Interested in Formal Collection?",
+  key: "formalInterest",
+  type: "select",
+  options: ["Yes", "No", "Maybe"]
+},
+
+  {
+    label: "Notes",
+    key: "notes"
+  }
+
+];
+const fields =
+  researchType === "Recycler"
+    ? recyclerFields
+    : researchType === "Workshop"
+    ? workshopFields
+    : industrialFields;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+  <div
+    className="
+      relative
+      min-h-screen
+      bg-cover
+      bg-center
+      bg-fixed
+      p-4 md:p-8
+    "
+    style={{
+      backgroundImage:
+        "url('/background.jpg')"
+    }}
+  >
 
-        <div className="bg-white rounded-3xl shadow-lg p-6">
+    <div className="absolute inset-0 bg-black/30"></div>
+
+    <div className="relative z-10 max-w-7xl mx-auto space-y-6">
+
+        <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow-[0_8px_32px_rgba(31,38,135,0.15)] p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold">Used Oil Research CRM</h1>
-              <p className="text-gray-500 mt-1">
-                Fast research data entry dashboard for recycler and RRBO market calls
-              </p>
-            </div>
+
+  <div className="flex items-center gap-4">
+
+    <img
+      src="/logo.png"
+      className="h-14"
+    />
+
+    <div>
+      <h1 className="text-3xl font-bold text-white">
+        Used Oil Ecosystem Intelligence Platform
+      </h1>
+
+      <p className="text-white/80 mt-1">
+        Research data entry dashboard for recycler and RRBO market calls
+      </p>
+    </div>
+
+  </div>
 
             <div className="flex gap-3 flex-wrap">
               <button
               onClick={saveEntry}
-              className="px-5 py-2 rounded-2xl bg-black text-white font-medium">
-                Save Entry
+              className="px-5 py-2 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-medium">
+                {editingId ? "Update Entry" : "Save Entry"}
               </button>
 
-              <button className="px-5 py-2 rounded-2xl border border-gray-300 font-medium">
-                Save & Next
-              </button>
-
+              
               <button 
               onClick={exportExcel}
-              className="px-5 py-2 rounded-2xl border border-gray-300 font-medium">
+              className="
+px-5 py-2
+rounded-2xl
+border border-white/20
+bg-white/10
+text-white
+font-medium
+backdrop-blur-md
+hover:bg-white/20
+transition
+">
                 Export Excel
               </button>
+              
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-3xl shadow p-5">
-            <div className="text-sm text-gray-500">Total Companies</div>
-            <div className="text-3xl font-bold mt-2">420</div>
+          
+          <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow p-5">
+            <div className="text-sm text-white/80">Total Companies</div>
+            <div className="text-3xl font-bold mt-2">
+  {companies.length}
+</div>
           </div>
 
-          <div className="bg-white rounded-3xl shadow p-5">
-            <div className="text-sm text-gray-500">Calls Today</div>
-            <div className="text-3xl font-bold mt-2">37</div>
+          <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow p-5">
+            <div className="text-sm text-white/80">Calls Today</div>
+            <div className="text-3xl font-bold mt-2">0</div>
           </div>
 
-          <div className="bg-white rounded-3xl shadow p-5">
-            <div className="text-sm text-gray-500">Follow-Ups Pending</div>
-            <div className="text-3xl font-bold mt-2">12</div>
+          <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow p-5">
+            <div className="text-sm text-white/80">Follow-Ups Pending</div>
+            <div className="text-3xl font-bold mt-2">0</div>
           </div>
 
-          <div className="bg-white rounded-3xl shadow p-5">
-            <div className="text-sm text-gray-500">Interested in MOU</div>
-            <div className="text-3xl font-bold mt-2">18</div>
+          <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow p-5">
+            <div className="text-sm text-white/80">Interested in MOU</div>
+            <div className="text-3xl font-bold mt-2">0</div>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-lg p-6 space-y-6">
+        <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow-[0_8px_32px_rgba(31,38,135,0.15)] p-6 space-y-6">
+          <div>
+  <label className="block text-sm font-medium text-white/90 mb-2">
+    Research Type
+  </label>
+
+  <select
+    value={researchType}
+    onChange={(e) =>
+      setResearchType(e.target.value)
+    }
+    className="
+w-full
+appearance-none
+border border-white/20
+bg-white/10
+text-black
+placeholder:text-black/40
+rounded-2xl
+px-4 py-3
+backdrop-blur-md
+focus:outline-none
+focus:ring-2
+focus:ring-blue-400
+"
+  >
+    <option>Recycler</option>
+    <option>Workshop</option>
+    <option>Industrial</option>
+  </select>
+</div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Call Status</label>
-              <select className="w-full border border-gray-300 rounded-2xl px-4 py-3">
+              <label className="block text-sm font-medium text-white/90 mb-2">Call Status</label>
+              <select
+  value={formData.status}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      status: e.target.value
+    })
+  }
+  className="
+w-full
+appearance-none
+border border-white/20
+bg-white/10
+text-black
+placeholder:text-black/40
+rounded-2xl
+px-4 py-3
+backdrop-blur-md
+focus:outline-none
+focus:ring-2
+focus:ring-blue-400
+"
+>
                 {statuses.map((status) => (
                   <option key={status}>{status}</option>
                 ))}
@@ -189,56 +717,195 @@ const statuses = [
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Call Date</label>
+              <label className="block text-sm font-medium text-white/90 mb-2">Call Date</label>
               <input
-                type="date"
-                className="w-full border border-gray-300 rounded-2xl px-4 py-3"
-              />
+  type="date"
+  value={formData.callDate}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      callDate: e.target.value
+    })
+  }
+  className="
+w-full
+border border-white/20
+bg-white/10
+text-black
+placeholder:text-black/40
+rounded-2xl
+px-4 py-3
+backdrop-blur-md
+focus:outline-none
+focus:ring-2
+focus:ring-blue-400
+"
+/>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Follow-Up Date</label>
+              <label className="block text-sm font-medium text-white/90 mb-2">Follow-Up Date</label>
               <input
-                type="date"
-                className="w-full border border-gray-300 rounded-2xl px-4 py-3"
-              />
+  type="date"
+  value={formData.followUpDate}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      followUpDate: e.target.value
+    })
+  }
+  className="
+w-full
+border border-white/20
+bg-white/10
+text-black
+placeholder:text-black/40
+rounded-2xl
+px-4 py-3
+backdrop-blur-md
+focus:outline-none
+focus:ring-2
+focus:ring-blue-400
+"
+/>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {fields.map((field) => (
-              <div key={field}>
-                <label className="block text-sm font-medium mb-2">{field}</label>
+              <div key={field.key}>
+                <label className="block text-sm font-medium text-white/90 mb-2">
+  {field.label}
+</label>
 
-                {field === 'Notes' ||
-                field === 'Supply Chain Challenges' ||
-                field === 'Marginal Processing Cost for Additional 50 KL' ? (
-                  <textarea
-                    rows={5}
-                    placeholder={`Enter ${field}`}
-                    className="w-full border border-gray-300 rounded-2xl px-4 py-3"
-                  />
-                ) : (
-                  <input
-                    type="text"
-                    placeholder={`Enter ${field}`}
-                    value={field === "Company with Address" ? company : ""}
-                    onChange={(e) => {
-                      if (field === "Company with Address") {
-                        setCompany(e.target.value);
-                      }
-                    }}
-                    className="w-full border border-gray-300 rounded-2xl px-4 py-3"
-                  />
-                )}
+                {field.key === 'notes' ||
+field.key === 'challenges' ||
+field.key === 'marginalCost' ? (
+
+  <textarea
+    rows={5}
+    placeholder={`Enter ${field.label}`}
+    value={formData[field.key] || ""}
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        [field.key]: e.target.value
+      })
+    }
+    className="
+w-full
+border border-white/20
+bg-white/10
+text-black
+placeholder:text-black/40
+rounded-2xl
+px-4 py-3
+backdrop-blur-md
+focus:outline-none
+focus:ring-2
+focus:ring-blue-400
+"
+/>
+
+) : field.type === "select" ? (
+
+<select
+  value={formData[field.key] || ""}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      [field.key]: e.target.value
+    })
+  }
+  className="
+w-full
+appearance-none
+border border-white/20
+bg-white/10
+text-black
+rounded-2xl
+px-4 py-3
+backdrop-blur-md
+focus:outline-none
+focus:ring-2
+focus:ring-blue-400
+"
+>
+  <option value="">
+    Select {field.label}
+  </option>
+
+  {field.options.map((option) => (
+    <option key={option} value={option}>
+      {option}
+    </option>
+  ))}
+</select>
+
+) : (
+
+<input
+  type="text"
+  placeholder={`Enter ${field.label}`}
+  value={formData[field.key] || ""}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      [field.key]: e.target.value
+    })
+  }
+  className="
+w-full
+border border-white/20
+bg-white/10
+text-black
+placeholder:text-black/40
+rounded-2xl
+px-4 py-3
+backdrop-blur-md
+focus:outline-none
+focus:ring-2
+focus:ring-blue-400
+"
+/>
+
+)}
               </div>
             ))}
+            
+                    </div>
+
+          <div className="flex gap-3 flex-wrap mt-6">
+            <button
+              onClick={saveEntry}
+              className="px-5 py-2 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-medium"
+            >
+              {editingId ? "Update Entry" : "Save Entry"}
+            </button>
+
+            <button
+              onClick={exportExcel}
+              className="
+px-5 py-2
+rounded-2xl
+border border-white/20
+bg-white/10
+text-white
+font-medium
+backdrop-blur-md
+hover:bg-white/20
+transition
+"
+            >
+              Export Excel
+            </button>
           </div>
+
         </div>
 
-        <div className="bg-white rounded-3xl shadow-lg p-6">
+        <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow-[0_8px_32px_rgba(31,38,135,0.15)] p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <h2 className="text-2xl font-bold">Recent Entries</h2>
+            <h2 className="text-2xl font-bold text-white">Recent Entries</h2>
 
             <div className="flex gap-3 flex-wrap">
               <input
@@ -247,7 +914,20 @@ const statuses = [
                 className="border border-gray-300 rounded-2xl px-4 py-2"
               />
 
-              <select className="border border-gray-300 rounded-2xl px-4 py-2">
+              <select
+  className="
+    appearance-none
+    border border-white/20
+    bg-white/10
+    text-black
+    rounded-2xl
+    px-4 py-2
+    backdrop-blur-md
+    focus:outline-none
+    focus:ring-2
+    focus:ring-blue-400
+  "
+>
                 <option>All Status</option>
                 {statuses.map((status) => (
                   <option key={status}>{status}</option>
@@ -259,44 +939,129 @@ const statuses = [
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
+               
                 <tr className="border-b border-gray-200 text-left">
                   <th className="py-3">Company</th>
                   <th className="py-3">Contact</th>
                   <th className="py-3">Phone</th>
                   <th className="py-3">Status</th>
+                  <th className="py-3">Type</th>
                   <th className="py-3">MOU</th>
                   <th className="py-3">Group</th>
                   <th className="py-3">Actions</th>
                 </tr>
               </thead>
+ <tbody>
+  {companies.length === 0 ? (
+    <tr>
+      <td
+        colSpan="7"
+        className="text-center py-10 text-white/60"
+      >
+        No entries yet
+      </td>
+    </tr>
+  ) : (
+    companies.map((company, index) => (
+      <tr
+  key={company.id || index}
+        className="border-b border-gray-100"
+      >
+        <td className="py-4">
+          {company.company}
+        </td>
 
-              <tbody>
-                <tr className="border-b border-gray-100">
-                  <td className="py-4">ABC Re-Refiners Pvt Ltd</td>
-                  <td className="py-4">Rajesh Sharma</td>
-                  <td className="py-4">9876543210</td>
-                  <td className="py-4">
-                    <span className="px-3 py-1 rounded-full bg-gray-100 text-sm">
-                      Follow-Up Needed
-                    </span>
-                  </td>
-                  <td className="py-4">Yes</td>
-                  <td className="py-4">Group II</td>
-                  <td className="py-4">
-                    <button className="px-3 py-1 border rounded-xl">
-                      Edit
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
+        <td className="py-4">
+          {company.contact}
+        </td>
+
+        <td className="py-4">
+          {company.phone}
+        </td>
+
+        <td className="py-4">
+          <span className="px-3 py-1 rounded-full bg-gradient-to-br from-slate-200 via-blue-100 to-indigo-200 text-sm">
+            {company.status}
+          </span>
+        </td>
+        <td className="py-4">
+  {company.type}
+</td>
+
+        <td className="py-4">
+          {company.mou || "-"}
+        </td>
+
+        <td className="py-4">
+          {company.group || "-"}
+        </td>
+
+        <td className="py-4 flex gap-2">
+
+  <button
+    onClick={() => {
+
+      setFormData({
+  company: company.company || "",
+  contact: company.contact || "",
+  phone: company.phone || "",
+  status: company.status || "Not Called",
+
+  capacity: company.capacity || "",
+  sources: company.sources || "",
+  geographies: company.geographies || "",
+  quality: company.quality || "",
+  challenges: company.challenges || "",
+  importCountries: company.importCountries || "",
+  importPrice: company.importPrice || "",
+  technology: company.technology || "",
+  yield: company.yield || "",
+  contaminants: company.contaminants || "",
+  group: company.group || "",
+  cpcb: company.cpcb || "",
+  collector: company.collector || "",
+  procurementCost: company.procurementCost || "",
+  rrboPrice: company.rrboPrice || "",
+  customers: company.customers || "",
+  eprCredits: company.eprCredits || "",
+  eprPrice: company.eprPrice || "",
+  eprBuyers: company.eprBuyers || "",
+  mou: company.mou || "",
+  processingCapacity: company.processingCapacity || "",
+  monthlyProcessing: company.monthlyProcessing || "",
+  marginalCost: company.marginalCost || "",
+  notes: company.notes || ""
+});
+
+setEditingId(company.id);
+
+    }}
+    className="px-3 py-1 border rounded-xl"
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={() => deleteEntry(company.id)}
+    className="px-3 py-1 border border-red-300 text-red-500 rounded-xl"
+  >
+    Delete
+  </button>
+
+</td>
+      </tr>
+    ))
+  )}
+</tbody>
+              
             </table>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-lg p-6">
+        <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow-[0_8px_32px_rgba(31,38,135,0.15)] p-6">
           <h2 className="text-2xl font-bold mb-4">Recommended Backend Setup</h2>
 
-          <div className="space-y-3 text-gray-700">
+          <div className="space-y-3 text-white/90">
             <p>• Frontend: React + Tailwind</p>
             <p>• Database: Firebase or Google Sheets</p>
             <p>• Export: Excel/CSV</p>
