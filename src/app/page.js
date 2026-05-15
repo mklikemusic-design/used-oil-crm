@@ -1117,7 +1117,7 @@ p-6
         </div>
 
         <div className="text-white font-semibold">
-          v1.0
+          v101.0
         </div>
       </div>
 
