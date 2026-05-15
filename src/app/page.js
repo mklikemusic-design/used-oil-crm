@@ -1058,19 +1058,73 @@ setEditingId(company.id);
           </div>
         </div>
 
-        <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow-[0_8px_32px_rgba(31,38,135,0.15)] p-6">
-          <h2 className="text-2xl font-bold mb-4">Recommended Backend Setup</h2>
+        <div className="
+bg-white/40
+backdrop-blur-xl
+border border-white/30
+shadow-xl
+rounded-3xl
+p-6
+">
 
-          <div className="space-y-3 text-white/90">
-            <p>• Frontend: React + Tailwind</p>
-            <p>• Database: Firebase or Google Sheets</p>
-            <p>• Export: Excel/CSV</p>
-            <p>• Hosting: Vercel</p>
-            <p>• Authentication: Google Login (optional)</p>
-            <p>• Analytics: Built-in dashboard cards</p>
-            <p>• Editable Entries: Fully supported</p>
-          </div>
+  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+    <div>
+      <h2 className="text-xl font-bold text-white">
+        System Status
+      </h2>
+
+      <p className="text-white/70 mt-1">
+        Used Oil Ecosystem Intelligence Platform operational
+      </p>
+    </div>
+
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+      <div>
+        <div className="text-white/60 text-sm">
+          Database
         </div>
+
+        <div className="text-green-300 font-semibold">
+          Connected
+        </div>
+      </div>
+
+      <div>
+        <div className="text-white/60 text-sm">
+          Total Records
+        </div>
+
+        <div className="text-white font-semibold">
+          {companies.length}
+        </div>
+      </div>
+
+      <div>
+        <div className="text-white/60 text-sm">
+          Export
+        </div>
+
+        <div className="text-blue-300 font-semibold">
+          Ready
+        </div>
+      </div>
+
+      <div>
+        <div className="text-white/60 text-sm">
+          Version
+        </div>
+
+        <div className="text-white font-semibold">
+          v1.0
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
       </div>
     </div>
   );
