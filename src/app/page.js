@@ -296,6 +296,14 @@ const statuses = [
     key: "challenges"
   },
   {
+    label: "Do you sell only RRBO or also fuel oil?",
+    key: "RRBO vs Fuel oil"
+  },
+  {
+    label: "When do recyclers prefer fuel applications over re-refining?",
+    key: "Fuel over re-refining"
+  },
+  {
     label: "Import Countries",
     key: "importCountries"
   },
