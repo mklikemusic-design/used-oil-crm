@@ -70,6 +70,11 @@ const [companies, setCompanies] = useState([]);
 const [editingId, setEditingId] = useState(null);
 const [researchType, setResearchType] =
   useState("Recycler");
+const [searchTerm, setSearchTerm] =
+  useState("");
+
+const [statusFilter, setStatusFilter] =
+  useState("All Status");
 const saveEntry = async () => {
 
   if (editingId) {
@@ -564,7 +569,27 @@ const fields =
     : researchType === "Workshop"
     ? workshopFields
     : industrialFields;
+const filteredCompanies =
+  companies.filter((company) => {
 
+    const matchesSearch =
+      company.company
+        ?.toLowerCase()
+        .includes(
+          searchTerm.toLowerCase()
+        );
+
+    const matchesStatus =
+      statusFilter === "All Status"
+        ? true
+        : company.status === statusFilter;
+
+    return (
+      matchesSearch &&
+      matchesStatus
+    );
+
+});
   return (
   <div
     className="
@@ -917,12 +942,31 @@ transition
 
             <div className="flex gap-3 flex-wrap">
               <input
-                type="text"
-                placeholder="Search company"
-                className="border border-gray-300 rounded-2xl px-4 py-2"
-              />
+  type="text"
+  placeholder="Search company"
+  value={searchTerm}
+  onChange={(e) =>
+    setSearchTerm(e.target.value)
+  }
+  className="
+    border border-white/20
+    bg-white/10
+    text-black
+    placeholder:text-black/40
+    rounded-2xl
+    px-4 py-2
+    backdrop-blur-md
+    focus:outline-none
+    focus:ring-2
+    focus:ring-blue-400
+  "
+/>
 
               <select
+  value={statusFilter}
+  onChange={(e) =>
+    setStatusFilter(e.target.value)
+  }
   className="
     appearance-none
     border border-white/20
@@ -960,7 +1004,7 @@ transition
                 </tr>
               </thead>
  <tbody>
-  {companies.length === 0 ? (
+  {filteredCompanies.length === 0 ? (
     <tr>
       <td
         colSpan="7"
@@ -970,7 +1014,7 @@ transition
       </td>
     </tr>
   ) : (
-    companies.map((company, index) => (
+    filteredCompanies.map((company, index) => (
       <tr
   key={company.id || index}
         className="border-b border-gray-100"
