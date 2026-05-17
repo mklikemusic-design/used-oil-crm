@@ -187,34 +187,62 @@ const deleteEntry = async (id) => {
   await deleteDoc(doc(db, "companies", id));
 
 };
+const cleanData = (data) => {
 
+  return data.map((item) => {
+
+    const cleaned = {};
+
+    Object.keys(item).forEach((key) => {
+
+      if (
+        item[key] !== "" &&
+        item[key] !== undefined &&
+        item[key] !== null
+      ) {
+        cleaned[key] = item[key];
+      }
+
+    });
+
+    return cleaned;
+
+  });
+
+};
 const exportExcel = () => {
 
   const workbook = XLSX.utils.book_new();
 
   const recyclers =
-    companies.filter(
-      c => c.type === "Recycler"
-    );
+  companies.filter(
+    c => c.type === "Recycler"
+  );
 
   const workshops =
-    companies.filter(
-      c => c.type === "Workshop"
-    );
+  companies.filter(
+    c => c.type === "Workshop"
+  );
 
   const industrial =
-    companies.filter(
-      c => c.type === "Industrial"
-    );
+  companies.filter(
+    c => c.type === "Industrial"
+  );
 
   const recyclerSheet =
-    XLSX.utils.json_to_sheet(recyclers);
+    XLSX.utils.json_to_sheet(
+  cleanData(recyclers)
+);
 
   const workshopSheet =
-    XLSX.utils.json_to_sheet(workshops);
+    XLSX.utils.json_to_sheet(
+  cleanData(workshops)
+);
 
   const industrialSheet =
-    XLSX.utils.json_to_sheet(industrial);
+    XLSX.utils.json_to_sheet(
+  cleanData(industrial)
+);
 
   XLSX.utils.book_append_sheet(
     workbook,
@@ -1054,36 +1082,12 @@ transition
     onClick={() => {
 
       setFormData({
-  company: company.company || "",
-  contact: company.contact || "",
-  phone: company.phone || "",
-  status: company.status || "Not Called",
-
-  capacity: company.capacity || "",
-  sources: company.sources || "",
-  geographies: company.geographies || "",
-  quality: company.quality || "",
-  challenges: company.challenges || "",
-  importCountries: company.importCountries || "",
-  importPrice: company.importPrice || "",
-  technology: company.technology || "",
-  yield: company.yield || "",
-  contaminants: company.contaminants || "",
-  group: company.group || "",
-  cpcb: company.cpcb || "",
-  collector: company.collector || "",
-  procurementCost: company.procurementCost || "",
-  rrboPrice: company.rrboPrice || "",
-  customers: company.customers || "",
-  eprCredits: company.eprCredits || "",
-  eprPrice: company.eprPrice || "",
-  eprBuyers: company.eprBuyers || "",
-  mou: company.mou || "",
-  processingCapacity: company.processingCapacity || "",
-  monthlyProcessing: company.monthlyProcessing || "",
-  marginalCost: company.marginalCost || "",
-  notes: company.notes || ""
+  ...formData,
+  ...company
 });
+setResearchType(
+  company.type || "Recycler"
+);
 
 setEditingId(company.id);
 
