@@ -20,7 +20,10 @@ export default function UsedOilResearchCRM() {
   status: "Not Called",
 callDate: "",
 followUpDate: "",
-
+rrboFuelOil: "",
+fuelPreference: "",
+monthlySourceImport: "",
+rrboVirginPricing: "",
   capacity: "",
   sources: "",
   geographies: "",
@@ -104,7 +107,10 @@ createdAt: new Date()
   setFormData({
   callDate: "",
   followUpDate: "",
-
+rrboFuelOil: "",
+fuelPreference: "",
+monthlySourceImport: "",
+rrboVirginPricing: "",
   company: "",
   contact: "",
   phone: "",
@@ -330,11 +336,11 @@ const statuses = [
   },
   {
     label: "Do you sell only RRBO or also fuel oil?",
-    key: "RRBO vs Fuel oil"
+    key: "rrboFuelOil"
   },
   {
     label: "When do recyclers prefer fuel applications over re-refining?",
-    key: "Fuel over re-refining"
+    key: "fuelPreference"
   },
   {
     label: "Import Countries",
