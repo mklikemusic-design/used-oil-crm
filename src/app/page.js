@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 
 import { useState, useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import * as XLSX from "xlsx";
 export default function UsedOilResearchCRM() {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ rrboVirginPricing: "",
   challenges: "",
   importCountries: "",
   importPrice: "",
-  technology: "",
+  technology: [],
   yield: "",
   contaminants: "",
   group: "",
@@ -85,11 +86,13 @@ const saveEntry = async () => {
     await updateDoc(
       doc(db, "companies", editingId),
       {
-        ...formData
-      }
-    );
+        ...formData,
+      
+      updatedAt:
+  new Date().toLocaleString()
+    });
 
-    alert("Updated Successfully");
+    toast.success("Entry updated successfully");
 
     setEditingId(null);
 
@@ -98,10 +101,11 @@ const saveEntry = async () => {
     await addDoc(collection(db, "companies"), {
       ...formData,
 type: researchType,
-createdAt: new Date()
+createdAt:
+  new Date().toLocaleString()
     });
 
-    alert("Saved Successfully");
+    toast.success("Entry saved successfully");
   }
 
   setFormData({
@@ -116,11 +120,6 @@ rrboVirginPricing: "",
   phone: "",
   status: "Not Called",
 
-  fixedCost: "",
-  variableCost: "",
-  additionalVolume: "",
-  calculatedMCU: "",
-
   capacity: "",
   sources: "",
   geographies: "",
@@ -128,7 +127,7 @@ rrboVirginPricing: "",
   challenges: "",
   importCountries: "",
   importPrice: "",
-  technology: "",
+  technology: [],
   yield: "",
   contaminants: "",
   group: "",
@@ -168,19 +167,7 @@ notes: ""
 });
 
 };
-const updateEntry = async (id) => {
 
-  const companyRef = doc(
-    db,
-    "companies",
-    id
-  );
-
-  await updateDoc(companyRef, {
-    status: "Follow-Up Needed"
-  });
-
-};
 
 const deleteEntry = async (id) => {
 
@@ -191,6 +178,7 @@ const deleteEntry = async (id) => {
   if (!confirmDelete) return;
 
   await deleteDoc(doc(db, "companies", id));
+  toast.success("Entry deleted");
 
 };
 const cleanData = (data) => {
@@ -206,7 +194,9 @@ const cleanData = (data) => {
         item[key] !== undefined &&
         item[key] !== null
       ) {
-        cleaned[key] = item[key];
+        cleaned[key] = Array.isArray(item[key])
+  ? item[key].join(", ")
+  : item[key];
       }
 
     });
@@ -314,10 +304,7 @@ const statuses = [
     label: "Phone Number",
     key: "phone"
   },
-  {
-    label: "Annual Licensed Processing Capacity",
-    key: "capacity"
-  },
+  
   {
     label: "Primary Sources of Used Oil",
     key: "sources"
@@ -351,32 +338,28 @@ const statuses = [
     key: "importPrice"
   },
   {
-    label: "Monthly Source vs Import",
-    key: "monthlySourceImport"
+    label: "Import Percentage",
+    key: "ImportPercent"
   },
   {
-    label: "Recycling Technology",
-    key: "technology"
-  },
+  label: "Recycling Technology",
+  key: "technology",
+  type: "checkbox",
+  options: [
+    "Hydrotreatment",
+    "Vacuum Distillation",
+    "Acid-Clay",
+    "Thin Film Evaporation",
+    "Blending",
+    "Other"
+  ]
+},
   {
     label: "Typical Yield",
     key: "yield"
   },
-  {
-    label: "Contaminant Testing",
-    key: "contaminants"
-  },
-  {
-  label: "Group I or II",
-  key: "group",
-  type: "select",
-  options: [
-    "Group I",
-    "Group II",
-    "Both",
-    "Unknown"
-  ]
-},
+  
+  
   {
   label: "CPCB Registration",
   key: "cpcb",
@@ -624,8 +607,19 @@ const filteredCompanies =
     );
 
 });
+const followUps =
+  companies.filter(
+    c => c.status === "Follow-Up Needed"
+  ).length;
+
+const interestedCompanies =
+  companies.filter(
+    c =>
+      c.status === "Interested"
+  ).length;
   return (
   <div
+  
     className="
       relative
       min-h-screen
@@ -639,7 +633,17 @@ const filteredCompanies =
         "url('/background.jpg')"
     }}
   >
-
+<Toaster
+  position="top-right"
+  toastOptions={{
+    style: {
+      background: "#111827",
+      color: "#fff",
+      borderRadius: "14px",
+      padding: "12px 16px"
+    }
+  }}
+/>
     <div className="absolute inset-0 bg-black/30"></div>
 
     <div className="relative z-10 max-w-7xl mx-auto space-y-6">
@@ -694,7 +698,7 @@ transition
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           
           <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow p-5">
             <div className="text-sm text-white/80">Total Companies</div>
@@ -708,10 +712,7 @@ transition
             <div className="text-3xl font-bold mt-2">0</div>
           </div>
 
-          <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow p-5">
-            <div className="text-sm text-white/80">Follow-Ups Pending</div>
-            <div className="text-3xl font-bold mt-2">0</div>
-          </div>
+          
 
           <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow p-5">
             <div className="text-sm text-white/80">Interested in MOU</div>
@@ -873,6 +874,60 @@ focus:ring-2
 focus:ring-blue-400
 "
 />
+) : field.type === "checkbox" ? (
+
+<div className="space-y-2">
+
+  {field.options.map((option) => (
+
+    <label
+      key={option}
+      className="
+        flex items-center gap-3
+        text-white
+      "
+    >
+
+      <input
+        type="checkbox"
+        checked={
+          formData[field.key]?.includes(option)
+        }
+
+        onChange={(e) => {
+
+          if (e.target.checked) {
+
+            setFormData({
+              ...formData,
+              [field.key]: [
+                ...(formData[field.key] || []),
+                option
+              ]
+            });
+
+          } else {
+
+            setFormData({
+              ...formData,
+              [field.key]:
+                formData[field.key].filter(
+                  (item) => item !== option
+                )
+            });
+
+          }
+
+        }}
+      />
+
+      {option}
+
+    </label>
+
+  ))}
+
+</div>
 
 ) : field.type === "select" ? (
 
@@ -1089,7 +1144,14 @@ transition
 
       setFormData({
   ...formData,
-  ...company
+  ...company,
+
+  technology:
+    Array.isArray(company.technology)
+      ? company.technology
+      : company.technology
+      ? [company.technology]
+      : []
 });
 setResearchType(
   company.type || "Recycler"
