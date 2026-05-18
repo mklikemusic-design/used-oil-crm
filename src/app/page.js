@@ -613,10 +613,19 @@ const followUps =
   ).length;
 
 const interestedCompanies =
-  companies.filter(
-    c =>
-      c.status === "Interested"
-  ).length;
+  companies.filter((c) => {
+
+    const mouValue =
+      c.mouInterest ||
+      c.openToMOU ||
+      c.mou ||
+      "";
+
+    return (
+      mouValue.toLowerCase() === "yes"
+    );
+
+  }).length;
   return (
   <div
   
@@ -707,10 +716,24 @@ transition
 </div>
           </div>
 
-          <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow p-5">
-            <div className="text-sm text-white/80">Calls Today</div>
-            <div className="text-3xl font-bold mt-2">0</div>
-          </div>
+          <div className="
+bg-white/40
+backdrop-blur-xl
+border border-white/30
+shadow-xl
+rounded-3xl
+p-5
+">
+
+  <div className="text-sm text-white/70">
+    Follow-Ups Pending
+  </div>
+
+  <div className="text-3xl font-bold mt-2 text-white">
+    {followUps}
+  </div>
+
+</div>
 
           
 
