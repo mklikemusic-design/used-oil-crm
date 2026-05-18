@@ -615,14 +615,12 @@ const followUps =
 const interestedCompanies =
   companies.filter((c) => {
 
-    const mouValue =
-      c.mouInterest ||
-      c.openToMOU ||
-      c.mou ||
-      "";
+    const mou =
+      c.mou || "";
 
     return (
-      mouValue.toLowerCase() === "yes"
+      mou.toString().trim().toLowerCase()
+      === "yes"
     );
 
   }).length;
@@ -729,7 +727,7 @@ p-5
     Follow-Ups Pending
   </div>
 
-  <div className="text-3xl font-bold mt-2 text-white">
+  <div className="text-3xl font-bold mt-2 text-black">
     {followUps}
   </div>
 
@@ -739,7 +737,7 @@ p-5
 
           <div className="bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl shadow p-5">
             <div className="text-sm text-white/80">Interested in MOU</div>
-            <div className="text-3xl font-bold mt-2">0</div>
+            <div className="text-3xl font-bold mt-2">{interestedCompanies}</div>
           </div>
         </div>
 
