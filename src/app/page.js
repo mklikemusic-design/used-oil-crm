@@ -57,7 +57,7 @@ collectorName: "",
 sellingPrice: "",
 buyerType: "",
 formalCollection: "",
-
+Saleprice: "",
 industryType: "",
 monthlyOil: "",
 storageCapacity: "",
@@ -152,7 +152,7 @@ collectorName: "",
 sellingPrice: "",
 buyerType: "",
 formalCollection: "",
-
+Saleprice: "",
 industryType: "",
 monthlyOil: "",
 storageCapacity: "",
@@ -537,7 +537,10 @@ const industrialFields = [
     label: "Storage Capacity",
     key: "storageCapacity"
   },
-
+{
+    label: "Selling Price",
+    key: "Saleprice"
+  },
   {
     label: "Current Disposal Method",
     key: "disposalMethod"
