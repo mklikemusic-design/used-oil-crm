@@ -19,7 +19,6 @@ export default function UsedOilResearchCRM() {
   contact: "",
   phone: "",
   status: "Not Called",
-callDate: "",
 followUpDate: "",
 rrboFuelOil: "",
 fuelPreference: "",
@@ -109,7 +108,6 @@ createdAt:
   }
 
   setFormData({
-  callDate: "",
   followUpDate: "",
 rrboFuelOil: "",
 fuelPreference: "",
@@ -806,33 +804,6 @@ focus:ring-blue-400
                   <option key={status}>{status}</option>
                 ))}
               </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-white/90 mb-2">Call Date</label>
-              <input
-  type="date"
-  value={formData.callDate}
-  onChange={(e) =>
-    setFormData({
-      ...formData,
-      callDate: e.target.value
-    })
-  }
-  className="
-w-full
-border border-white/20
-bg-white/10
-text-black
-placeholder:text-black/40
-rounded-2xl
-px-4 py-3
-backdrop-blur-md
-focus:outline-none
-focus:ring-2
-focus:ring-blue-400
-"
-/>
             </div>
 
             <div>
