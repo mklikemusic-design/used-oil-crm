@@ -28,6 +28,7 @@ rrboVirginPricing: "",
   sources: "",
   geographies: "",
   quality: "",
+  IS18722: "",
   challenges: "",
   importCountries: "",
   importPrice: "",
@@ -122,6 +123,7 @@ rrboVirginPricing: "",
   sources: "",
   geographies: "",
   quality: "",
+  IS18722: "",
   challenges: "",
   importCountries: "",
   importPrice: "",
@@ -315,6 +317,12 @@ const statuses = [
     label: "Quality Control Process",
     key: "quality"
   },
+  {
+  label: "Meet IS 18722",
+  key: "IS18722",
+  type: "select",
+  options: ["Yes", "No"]
+},
   {
     label: "Supply Chain Challenges",
     key: "challenges"
