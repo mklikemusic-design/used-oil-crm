@@ -23,7 +23,6 @@ followUpDate: "",
 rrboFuelOil: "",
 fuelPreference: "",
 monthlySourceImport: "",
-rrboVirginPricing: "",
   capacity: "",
   sources: "",
   geographies: "",
@@ -113,7 +112,6 @@ createdAt:
 rrboFuelOil: "",
 fuelPreference: "",
 monthlySourceImport: "",
-rrboVirginPricing: "",
   company: "",
   contact: "",
   phone: "",
@@ -386,10 +384,7 @@ const statuses = [
     label: "RRBO Selling Price",
     key: "rrboPrice"
   },
-  {
-    label: "RRBO vs Virgin Base Oil Pricing",
-    key: "rrboVirginPricing"
-  },
+  
   {
     label: "RRBO Offtake Customers",
     key: "customers"
