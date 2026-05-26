@@ -27,7 +27,7 @@ monthlySourceImport: "",
   sources: "",
   geographies: "",
   quality: "",
-  IS18722: "",
+  BIS18722: "",
   challenges: "",
   importCountries: "",
   importPrice: "",
@@ -121,7 +121,7 @@ monthlySourceImport: "",
   sources: "",
   geographies: "",
   quality: "",
-  IS18722: "",
+  BIS18722: "",
   challenges: "",
   importCountries: "",
   importPrice: "",
@@ -316,8 +316,8 @@ const statuses = [
     key: "quality"
   },
   {
-  label: "Meet IS 18722",
-  key: "IS18722",
+  label: "Meet BIS 18722",
+  key: "BIS18722",
   type: "select",
   options: ["Yes", "No"]
 },
@@ -1086,7 +1086,7 @@ transition
                   <th className="py-3">Status</th>
                   <th className="py-3">Type</th>
                   <th className="py-3">MOU</th>
-                  <th className="py-3">IS 18722</th>
+                  <th className="py-3">BIS 18722</th>
                   <th className="py-3">Actions</th>
                 </tr>
               </thead>
@@ -1132,7 +1132,7 @@ transition
         </td>
 
         <td className="py-4">
-          {company.IS18722 || "-"}
+          {company.BIS18722 || "-"}
         </td>
 
         <td className="py-4 flex gap-2">
