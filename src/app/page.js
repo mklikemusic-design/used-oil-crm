@@ -1086,6 +1086,7 @@ transition
                   <th className="py-3">Status</th>
                   <th className="py-3">Type</th>
                   <th className="py-3">MOU</th>
+                  <th className="py-3">IS 18722</th>
                   <th className="py-3">Actions</th>
                 </tr>
               </thead>
@@ -1131,7 +1132,7 @@ transition
         </td>
 
         <td className="py-4">
-          {company.group || "-"}
+          {company.IS18722 || "-"}
         </td>
 
         <td className="py-4 flex gap-2">
