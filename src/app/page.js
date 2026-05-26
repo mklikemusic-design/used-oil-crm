@@ -1086,7 +1086,6 @@ transition
                   <th className="py-3">Status</th>
                   <th className="py-3">Type</th>
                   <th className="py-3">MOU</th>
-                  <th className="py-3">Group</th>
                   <th className="py-3">Actions</th>
                 </tr>
               </thead>
